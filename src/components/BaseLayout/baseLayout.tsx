@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useStore } from "react-redux";
 import { tool } from "@/utils";
 import { Icon, ICON_TYPE } from "@/components";
-import { Layout } from "antd";
+import { Layout, Badge, Popover } from "antd";
+import { CardItem } from "@/App";
 import style from "./baseLayout.module.scss";
 
 const { Header, Content } = Layout;
@@ -51,6 +52,11 @@ export default (props: IProps) => {
     (item) => item.status !== 0
   );
 
+  const renderMsgList = () =>
+    store.getState().message.map((i) => {
+      return <CardItem title={i.content} type={ICON_TYPE.FAIL} key={i.uid} />;
+    });
+
   useEffect(() => {
     const listener = () => {
       tool.local.set("store", store.getState());
@@ -66,8 +72,16 @@ export default (props: IProps) => {
       <Header className={style.header}>
         <div className={style.logo}>XOA</div>
         <div className={style.info}>
-          <Icon type={ICON_TYPE.MESSAGE} />
-          <span>
+          <Badge
+            showZero={false}
+            count={store.getState()?.message?.length || 0}
+          >
+            <Popover trigger="click" content={renderMsgList()}>
+              <Icon type={ICON_TYPE.MESSAGE} className={style.message} />
+            </Popover>
+          </Badge>
+
+          <span style={{ marginLeft: 20 }}>
             已用{alerdyUse}, 总容量{total}
           </span>
         </div>

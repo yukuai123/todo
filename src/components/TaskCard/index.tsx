@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { TodoListAction } from "@/actions";
 import { Badge } from "antd";
 import moment from "moment";
 import { EllipsisOutlined } from "@ant-design/icons";
@@ -48,6 +50,38 @@ const FREQUENCY_STATUS = ["error", "warning"];
 const FREQUENCY_TEXT = ["每天", "每周"];
 export default (props: IProps) => {
   const { data } = props;
+  const dispatch = useDispatch();
+  const timerRef = useRef<any>();
+
+  const onHandleExpiredTask = (uid) => {
+    dispatch(TodoListAction.editTodo({ uid, status: 0 }));
+  };
+
+  const clearTimer = () => timerRef.current && clearTimeout(timerRef.current);
+
+  const watchTaskTime = () => {
+    const { endTime, uid } = data;
+    console.log(endTime, Date.now());
+    if (endTime < Date.now()) {
+      clearTimer();
+      onHandleExpiredTask(uid);
+      return;
+    } else {
+      const time = endTime - Date.now();
+      // setTimeout会被自动回收
+      timerRef.current = setTimeout(
+        () => {
+          return onHandleExpiredTask(uid);
+        },
+        time > 0 ? time : 0
+      );
+    }
+  };
+
+  useEffect(() => {
+    watchTaskTime();
+    return clearTimer;
+  }, [data]);
 
   const DropdownTsx = (
     <OpDropdown status={data.status} uid={data.uid}>
@@ -61,7 +95,7 @@ export default (props: IProps) => {
         <section className={style.time}>
           <div className={style.item}>
             <span className={style.label}>开始时间：</span>
-            <span>{moment(data.endTime).format(FORMAT)}</span>
+            <span>{moment(data.startTime).format(FORMAT)}</span>
           </div>
           <div className={style.item}>
             <span className={style.label}>结束时间：</span>

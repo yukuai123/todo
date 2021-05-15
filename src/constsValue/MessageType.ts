@@ -1,0 +1,4 @@
+export default {
+  ADD_MESSAGE: "ADD_MESSAGE",
+  READ_MESSAGE: "READ_MESSAGE",
+};

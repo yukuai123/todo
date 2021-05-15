@@ -91,12 +91,16 @@ export default (props: IProps) => {
 
   const startDisDate = (curDate) => {
     const { endTime } = datetime;
+    const yestoday = moment().subtract(1, "days");
+    if (curDate.isBefore(yestoday)) return true;
     if (!endTime) return false;
     return curDate.isAfter(endTime);
   };
 
   const endDisDate = (curDate) => {
     const { startTime } = datetime;
+    const yestoday = moment().subtract(1, "days");
+    if (curDate.isBefore(yestoday)) return true;
     if (!startTime) return false;
     return curDate.isBefore(startTime);
   };

@@ -21,7 +21,7 @@ const TitleItem = ({ title, itemIconType }) => {
   );
 };
 
-const CardItem = ({ title, type }) => (
+export const CardItem = ({ title, type }) => (
   <div className={style.cardItem}>
     <Icon type={type} /> <span className={style.innterTitle}>{title}</span>
   </div>
