@@ -1,0 +1,4 @@
+export default {
+  OPEN_INFO_MODAL: "OPEN_INFO_MODAL",
+  CLOSE_INFO_MODAL: "CLOSE_INFO_MODAL",
+};
