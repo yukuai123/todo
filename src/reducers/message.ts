@@ -1,22 +1,13 @@
-import { TodoListType } from "@/constsValue";
+import { MessageType } from "@/constsValue";
 
-const { ADD_TODO, EDIT_TODO, DEL_TODO } = TodoListType;
+const { ADD_MESSAGE, READ_MESSAGE } = MessageType;
 
 export default (state = [], action) => {
-  console.log(action);
-
   switch (action.type) {
-    case ADD_TODO:
+    case ADD_MESSAGE:
       return [...state, action.data.item];
-    case EDIT_TODO:
-      return state.map((item) => {
-        if (item.uid === action.data.uid) {
-          return { ...item, ...action.data.item };
-        }
-        return item;
-      });
-    case DEL_TODO:
-      return state.filter((item) => item.uid !== action.data.uid);
+    case READ_MESSAGE:
+      return [];
     default:
       return state;
   }

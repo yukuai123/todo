@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
-import { useStore } from "react-redux";
+import React, { useEffect, useState, useMemo } from "react";
+import { useStore, useSelector, useDispatch } from "react-redux";
 import { tool } from "@/utils";
 import { Icon, ICON_TYPE } from "@/components";
 import { Layout, Badge, Popover } from "antd";
 import { CardItem } from "@/App";
+import { MessageAction } from "@/actions";
 import style from "./baseLayout.module.scss";
 
 const { Header, Content } = Layout;
@@ -44,18 +45,40 @@ const calcTotal = (list, filter?) => {
 
 export default (props: IProps) => {
   const store = useStore();
+  const { todoList, message } = useSelector((state: any) => ({
+    todoList: state.todoList,
+    message: state.message,
+  }));
+  const dispatch = useDispatch();
+  const [visible, setVisible] = useState<boolean>(false);
 
-  const total = calcTotal(store.getState().todoList);
-  // 先过滤掉已失效的数据
-  const alerdyUse = calcTotal(
-    store.getState().todoList,
-    (item) => item.status !== 0
+  const total = useMemo(() => calcTotal(todoList), [todoList]);
+  // 先过滤掉已失效 & 完成的数据
+  const alerdyUse = useMemo(
+    () => calcTotal(todoList, (item) => [0, 2].includes(item.status)),
+    [todoList]
   );
 
-  const renderMsgList = () =>
-    store.getState().message.map((i) => {
-      return <CardItem title={i.content} type={ICON_TYPE.FAIL} key={i.uid} />;
+  const renderMsgList = () => {
+    const renderList = message.map((i) => {
+      return (
+        <CardItem
+          title={i.title}
+          type={ICON_TYPE.FAIL}
+          key={i.uid}
+          className={style.cardItem}
+        />
+      );
     });
+
+    return renderList.length ? renderList : null;
+  };
+
+  const onHandlePopVisible = (visible) => {
+    message.length && setVisible(visible);
+    // 关闭popover时关闭已读所有消息
+    return !visible && dispatch(MessageAction.readMessage());
+  };
 
   useEffect(() => {
     const listener = () => {
@@ -76,8 +99,19 @@ export default (props: IProps) => {
             showZero={false}
             count={store.getState()?.message?.length || 0}
           >
-            <Popover trigger="click" content={renderMsgList()}>
-              <Icon type={ICON_TYPE.MESSAGE} className={style.message} />
+            <Popover
+              trigger="click"
+              placement="bottom"
+              visible={visible}
+              content={renderMsgList()}
+              overlayClassName={style.pop}
+              onVisibleChange={onHandlePopVisible}
+              getPopupContainer={(trigger: any) => trigger.parentNode}
+            >
+              {/* 不加div无法触发pop visible */}
+              <div>
+                <Icon type={ICON_TYPE.MESSAGE} className={style.message} />
+              </div>
             </Popover>
           </Badge>
 

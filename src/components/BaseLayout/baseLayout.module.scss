@@ -27,3 +27,20 @@
   padding: 30px 20px 40px;
   background: #f0f2f5;
 }
+
+.cardItem {
+  padding: 8px 0;
+  border-bottom: 1px solid #efefef;
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+}
+
+.pop {
+  :global {
+    .ant-popover-content {
+      width: 200px;
+    }
+  }
+}

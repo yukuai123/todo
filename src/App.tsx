@@ -21,8 +21,8 @@ const TitleItem = ({ title, itemIconType }) => {
   );
 };
 
-export const CardItem = ({ title, type }) => (
-  <div className={style.cardItem}>
+export const CardItem = ({ title, type, className }: any) => (
+  <div className={`${style.cardItem} ${className || ""}`}>
     <Icon type={type} /> <span className={style.innterTitle}>{title}</span>
   </div>
 );
@@ -61,13 +61,15 @@ const App = () => {
       progressList: [],
     }
   );
+  const progressPrecent = (finishList.length / (todoList.length || 1)) * 100;
+
   return (
     <BaseLayout>
       <main>
         <TaskList list={progressList} />
         <div className={style.bars}>
           <BaseCard title="执行率" className={style.rate}>
-            <Progress percent={30} />
+            <Progress percent={progressPrecent} />
           </BaseCard>
 
           <StatusList

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { TodoListAction } from "@/actions";
+import { TodoListAction, MessageAction } from "@/actions";
 import { Badge } from "antd";
 import moment from "moment";
 import { EllipsisOutlined } from "@ant-design/icons";
@@ -55,19 +55,22 @@ export default (props: IProps) => {
 
   const onHandleExpiredTask = (uid) => {
     dispatch(TodoListAction.editTodo({ uid, status: 0 }));
+    dispatch(
+      MessageAction.addMessage({ uid, title: `任务：${data.title}，已失效` })
+    );
   };
 
   const clearTimer = () => timerRef.current && clearTimeout(timerRef.current);
 
   const watchTaskTime = () => {
     const { endTime, uid } = data;
-    console.log(endTime, Date.now());
-    if (endTime < Date.now()) {
+    const currentTime = Date.now();
+    if (endTime < currentTime) {
       clearTimer();
       onHandleExpiredTask(uid);
       return;
     } else {
-      const time = endTime - Date.now();
+      const time = endTime - currentTime;
       // setTimeout会被自动回收
       timerRef.current = setTimeout(
         () => {
