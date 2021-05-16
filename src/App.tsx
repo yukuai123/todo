@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { InfoModalAction } from "@/actions";
 import {
@@ -61,7 +61,11 @@ const App = () => {
       progressList: [],
     }
   );
-  const progressPrecent = (finishList.length / (todoList.length || 1)) * 100;
+  const calcProgressPrecent = useCallback(() => {
+    const result = (finishList.length / (todoList.length || 1)) * 100;
+    const isFloat = /\./.test(result.toString());
+    return isFloat ? result.toFixed(2) : (result as any);
+  }, [finishList.length, todoList.length]);
 
   return (
     <BaseLayout>
@@ -69,7 +73,10 @@ const App = () => {
         <TaskList list={progressList} />
         <div className={style.bars}>
           <BaseCard title="执行率" className={style.rate}>
-            <Progress percent={progressPrecent} />
+            <Progress
+              className={style.progress}
+              percent={calcProgressPrecent()}
+            />
           </BaseCard>
 
           <StatusList

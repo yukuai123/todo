@@ -68,7 +68,6 @@ export default (props: IProps) => {
     if (endTime < currentTime) {
       clearTimer();
       onHandleExpiredTask(uid);
-      return;
     } else {
       const time = endTime - currentTime;
       // setTimeout会被自动回收

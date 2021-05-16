@@ -15,6 +15,14 @@ main {
       min-height: auto;
     }
 
+    .progress {
+      :global {
+        .ant-progress-outer {
+          width: 97% !important;
+        }
+      }
+    }
+
     .title {
     }
     .innterTitle {
