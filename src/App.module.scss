@@ -9,6 +9,7 @@ main {
     .rate,
     .finish,
     .expired {
+      flex: none;
       margin: 0 0 15px;
       width: 300px;
       height: auto;

@@ -1,5 +1,7 @@
 .task {
-  width: 380px;
+  flex: 1;
+  min-width: 300px;
+  max-width: 380px;
   min-height: 250px;
   font-family: mic;
   color: black;
